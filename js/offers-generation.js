@@ -19,7 +19,7 @@ const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
   mapCanvas.appendChild(offersFragment);
 }
 
-const generateOffer = (offerData, offerDataAuthor) => {
+function generateOffer(offerData, offerDataAuthor) {
   const offer = offerNode.cloneNode(true);
   const price = offer.querySelector('.popup__text--price');
   const type = offer.querySelector('.popup__type');
