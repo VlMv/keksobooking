@@ -10,9 +10,9 @@ const placesMinPrice = {
   house: 5000,
   palace: 10000,
 
-  getMatchedValue: function (placeTypeValue) {
-    for (let type in this) {
-      if (type === placeTypeValue) return this[type];
+  getMatchedValue: function (placeType) {
+    for (let key in this) {
+      if (key === placeType) return this[key];
     }
   },
 }

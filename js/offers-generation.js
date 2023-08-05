@@ -63,15 +63,15 @@ function generateOffer(offerData, offerDataAuthor) {
     checkinChekoutTime.textContent = `Заезд после ${offerData.checkin}, выезд до ${offerData.checkout}` :
     checkinChekoutTime.remove();
 
-  addOfferTypeContent(offerData.type, type);
+  setOfferTypeContent(offerData.type, type);
 
-  addGuestsCapacityContent(offerData.rooms, offerData.guests, guestsCapacity, wordsEndings);
+  setGuestsCapacityContent(offerData.rooms, offerData.guests, guestsCapacity, wordsEndings);
 
-  addFeatures(offerData.features, features);
+  setFeatures(offerData.features, features);
 
-  addPhotos(offerData.photos, photos);
+  setPhotos(offerData.photos, photos);
 
-  addAvatar(offerDataAuthor.avatar, authorAvatar);
+  setAvatar(offerDataAuthor.avatar, authorAvatar);
 
   return offer;
 }
@@ -83,8 +83,12 @@ function addTextElementIfDataExists(element, data) {
     element.remove();
 }
 
+function setOfferTypeContent(offerDataType, offerType) {
+  if (!offerDataType) {
+    offerType.remove();
+    return;
+  }
 
-function addOfferTypeContent(offerDataType, offerType) {
   const residePlaceTypes = {
     flat: 'Квартира',
     bungalow: 'Бунгало',
@@ -102,7 +106,12 @@ function addOfferTypeContent(offerDataType, offerType) {
 }
 
 
-function addGuestsCapacityContent(resideRooms, resideGuests, guestsCapacity, wordsEndings) {
+function setGuestsCapacityContent(resideRooms, resideGuests, guestsCapacity, wordsEndings) {
+  if (!resideRooms || !resideGuests) {
+    guestsCapacity.remove();
+    return;
+  }
+
   let numberOfRooms = `${resideRooms} комнат${getWordEnding(resideRooms, wordsEndings.roomWord)}`;
   let numberOfGuests = `${resideGuests} гост${getWordEnding(resideGuests, wordsEndings.guestWord)}`;
 
@@ -127,7 +136,7 @@ function getWordEnding(numeral, endings) {
 }
 
 
-function addFeatures(resideFeatures, features) {
+function setFeatures(resideFeatures, features) {
   if (resideFeatures.length === 0) {
     features.remove();
     return;
@@ -147,7 +156,7 @@ function addFeatures(resideFeatures, features) {
 }
 
 
-function addPhotos(residePhotos, photos) {
+function setPhotos(residePhotos, photos) {
   if (residePhotos.length === 0) {
     photos.remove();
     return;
@@ -168,7 +177,7 @@ function addPhotos(residePhotos, photos) {
 }
 
 
-function addAvatar(offerAuthorAvatar, authorAvatar) {
+function setAvatar(offerAuthorAvatar, authorAvatar) {
   if (checkFileNotExists(offerAuthorAvatar)) {
     authorAvatar.remove();
     return;

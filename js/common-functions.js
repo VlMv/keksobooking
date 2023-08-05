@@ -42,8 +42,8 @@ function getRandomArrayElements(array) {
 
 
 function shuffleArrayElements(array) {
-  for (let i = 0; i < array.length; i++) {
-    let randomIndex = getRandomInteger(0, array.length - 1);
+  for (let i = array.length - 1; i > 0; i--) {
+    let randomIndex = getRandomInteger(0, i + 1);
     [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
   }
   return array
