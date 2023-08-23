@@ -1,5 +1,5 @@
 import './offers-generation.js';
 import './offer-form.js';
+import './map.js';
 
-import { generateOffers } from './offers-generation.js';
-generateOffers(1)
+

@@ -16,8 +16,9 @@ const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
     offersFragment.appendChild(generateOffer(offerData, offerDataAuthor));
   }
 
-  mapCanvas.appendChild(offersFragment);
+  return offersFragment.firstChild.innerHTML;
 }
+
 
 function generateOffer(offerData, offerDataAuthor) {
   const offer = offerNode.cloneNode(true);
@@ -56,7 +57,7 @@ function generateOffer(offerData, offerDataAuthor) {
   }
 
   offerData.price ?
-    price.textContent = `${offerData.price} ₽/ночь` :
+    price.querySelector('span').previousSibling.replaceData(0, 4, offerData.price) :
     price.remove();
 
   (offerData.checkin && offerData.checkout) ?
