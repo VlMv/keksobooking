@@ -1,4 +1,4 @@
-import { residePlaces, RESIDE_PLACE_COUNT } from './reside-places-data.js';
+import { makeNearResidePlaces, RESIDE_PLACE_COUNT } from './reside-places-data.js';
 export { generateOffers };
 
 const cardContent = document.querySelector('#card').content;
@@ -6,8 +6,8 @@ const offerNode = cardContent.querySelector('.popup');
 
 
 const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
-  const mapCanvas = document.querySelector('#map-canvas');
   const offersFragment = new DocumentFragment();
+  const residePlaces = makeNearResidePlaces(offersCount);
 
   for (let i = 0; i < offersCount; i++) {
     const offerData = residePlaces[i].offer;
@@ -17,7 +17,7 @@ const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
   }
 
   return offersFragment.firstChild.innerHTML;
-}
+};
 
 
 function generateOffer(offerData, offerDataAuthor) {

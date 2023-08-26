@@ -71,7 +71,7 @@ mainMarker.on('mouseover', (e) => {
   e.target.dragging.enable();
 })
 
-mainMarker.on('drag', function (e) {
+mainMarker.on('drag', () => {
   const markerLat = mainMarker.getLatLng().lat;
   const markerLng = mainMarker.getLatLng().lng;
   addressInput.value = `${markerLat.toFixed(5)}, ${markerLng.toFixed(5)}`;
@@ -79,27 +79,28 @@ mainMarker.on('drag', function (e) {
 
 import { generateOffers } from './offers-generation.js';
 
-let first = generateOffers(2);
-// let second = generateOffers(1);
-console.log(first);
-// console.log(second);
-
-// несколько генераций, как вытаскивать из фрагмента html код?
-
 const commomMarker = L.marker(
   [35.64753, 139.81853],
   {
     icon: commonMarkerIcon,
   },
-).addTo(map);
+).addTo(map).bindPopup(
+  L.popup(
+    {
+      content: generateOffers(1),
+      offset: [0, -32],
+    })
+);
 
-commomMarker.bindPopup(generateOffers(1));
-
-const commomMarker1 = L.marker(
+L.marker(
   [35.63079, 139.69666],
   {
     icon: commonMarkerIcon,
   },
-).addTo(map);
-
-commomMarker1.bindPopup(generateOffers(1));
+).addTo(map).bindPopup(
+  L.popup(
+    {
+      content: generateOffers(1),
+      offset: [0, -32],
+    })
+);

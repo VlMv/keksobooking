@@ -1,7 +1,7 @@
 import { getRandomInteger, getRandomFloat, getRandomArrayElement, getRandomArrayElements, shuffleArrayElements } from './common-functions.js';
 
 
-export { residePlaces, RESIDE_PLACE_COUNT };
+export { makeNearResidePlaces, RESIDE_PLACE_COUNT };
 
 
 const RESIDE_PLACE_COUNT = 10;
@@ -118,5 +118,3 @@ const makeNearResidePlaces = (placesCount = RESIDE_PLACE_COUNT) => {
   );
   return places;
 }
-
-const residePlaces = makeNearResidePlaces();

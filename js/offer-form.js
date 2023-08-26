@@ -1,5 +1,6 @@
 const offerForm = document.querySelector('.ad-form');
 
+
 // price of place type dependencies
 const placeTypesSelect = offerForm.querySelector('#type');
 const priceInput = offerForm.querySelector('#price');
@@ -22,6 +23,10 @@ placeTypesSelect.addEventListener('change', () => {
   priceInput.setAttribute('placeholder', placesMinPrice.getMatchedValue(placeTypesSelect.value));
 });
 
+priceInput.addEventListener('change', () => {
+  priceInput.reportValidity()
+});
+
 
 // chekin of checkout dependencies
 const checkInInput = offerForm.querySelector('#timein');
@@ -37,3 +42,38 @@ timeFieldset.addEventListener('input', (evt) => {
   }
 });
 
+
+// rooms adn guests dependencies
+const roomsNumberSelect = offerForm.querySelector('#room_number');
+const guestsCapacitySelect = offerForm.querySelector('#capacity');
+
+const checkGuestsCapacityValidaton = () => {
+  const isGuestsCountDoesNotMatchRooms = +guestsCapacitySelect.value > +roomsNumberSelect.value && +guestsCapacitySelect.value !== 0;
+  const isNotForGuests = (+roomsNumberSelect.value === 100 && +guestsCapacitySelect.value !== 0);
+  const isNotEnoughRooms = +roomsNumberSelect.value !== 100 && +guestsCapacitySelect.value === 0;
+
+  if (isNotForGuests) {
+    guestsCapacitySelect.setCustomValidity('Допустимо: не для гостей');
+
+  } else if (isNotEnoughRooms) {
+    roomsNumberSelect.setCustomValidity('Допустимое количество комнат не менее 100')
+
+  } else if (isGuestsCountDoesNotMatchRooms) {
+    guestsCapacitySelect.setCustomValidity(`Допустимо: число гостей не более ${roomsNumberSelect.value}`);
+
+  } else {
+    guestsCapacitySelect.setCustomValidity('');
+    roomsNumberSelect.setCustomValidity('');
+  }
+
+  guestsCapacitySelect.reportValidity();
+  roomsNumberSelect.reportValidity();
+};
+
+guestsCapacitySelect.addEventListener('change', checkGuestsCapacityValidaton);
+roomsNumberSelect.addEventListener('change', checkGuestsCapacityValidaton);
+
+
+offerForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+});
