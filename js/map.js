@@ -1,3 +1,7 @@
+import { generateOffers } from './offers-generation.js';
+
+const FLOAT_SYMBOLS_COUNT = 5;
+
 const offerForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 const offerFormFieldsets = offerForm.querySelectorAll('fieldset');
@@ -72,35 +76,30 @@ mainMarker.on('mouseover', (e) => {
 })
 
 mainMarker.on('drag', () => {
-  const markerLat = mainMarker.getLatLng().lat;
-  const markerLng = mainMarker.getLatLng().lng;
-  addressInput.value = `${markerLat.toFixed(5)}, ${markerLng.toFixed(5)}`;
+  const markerLatitude = mainMarker.getLatLng().lat;
+  const markerLongitude = mainMarker.getLatLng().lng;
+
+  addressInput.value = `${markerLatitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${markerLongitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
 });
 
-import { generateOffers } from './offers-generation.js';
 
-const commomMarker = L.marker(
-  [35.64753, 139.81853],
-  {
-    icon: commonMarkerIcon,
-  },
-).addTo(map).bindPopup(
-  L.popup(
-    {
-      content: generateOffers(1),
-      offset: [0, -32],
-    })
-);
+//offers markers generation
 
-L.marker(
-  [35.63079, 139.69666],
-  {
-    icon: commonMarkerIcon,
-  },
-).addTo(map).bindPopup(
-  L.popup(
-    {
-      content: generateOffers(1),
-      offset: [0, -32],
-    })
-);
+const offersFragment = generateOffers();
+const offers = Array.from(offersFragment.children);
+
+offers.forEach((offer) => {
+  const addressCoordinates = offer.querySelector('.popup__text--address')
+    .textContent.split(', ');
+
+  L.marker(
+    [+addressCoordinates[0], +addressCoordinates[1]],
+    { icon: commonMarkerIcon },
+  ).addTo(map).bindPopup(
+    L.popup(
+      {
+        content: offer.innerHTML,
+        offset: [0, -32],
+      })
+  );
+});

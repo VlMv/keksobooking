@@ -16,7 +16,7 @@ const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
     offersFragment.appendChild(generateOffer(offerData, offerDataAuthor));
   }
 
-  return offersFragment.firstChild.innerHTML;
+  return offersFragment;
 };
 
 

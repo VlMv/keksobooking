@@ -28,7 +28,7 @@ priceInput.addEventListener('change', () => {
 });
 
 
-// chekin of checkout dependencies
+// chekin and checkout dependencies
 const checkInInput = offerForm.querySelector('#timein');
 const checkOutInput = offerForm.querySelector('#timeout');
 const timeFieldset = offerForm.querySelector('.ad-form__element--time');
@@ -43,7 +43,7 @@ timeFieldset.addEventListener('input', (evt) => {
 });
 
 
-// rooms adn guests dependencies
+// rooms and guests dependencies
 const roomsNumberSelect = offerForm.querySelector('#room_number');
 const guestsCapacitySelect = offerForm.querySelector('#capacity');
 
