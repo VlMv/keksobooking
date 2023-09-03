@@ -1,3 +1,4 @@
+import { getData } from './offers-data.js';
 import { generateOffers } from './offers-generation.js';
 
 const FLOAT_SYMBOLS_COUNT = 5;
@@ -31,9 +32,9 @@ const map = L.map('map-canvas')
     }
   })
   .setView({
-    lat: 35.627330,
-    lng: 139.779539,
-  }, 12);
+    lat: 35.67822,
+    lng: 139.74901,
+  }, 13);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -61,7 +62,7 @@ const commonMarkerIcon = L.icon({
 // set main Marker dragging
 
 const mainMarker = L.marker(
-  [35.627330, 139.779539],
+  [35.67822, 139.74901],
   {
     icon: mainMarkerIcon,
     draggable: true,
@@ -83,23 +84,29 @@ mainMarker.on('drag', () => {
 });
 
 
-//offers markers generation
+//offers markers generation and rendering
 
-const offersFragment = generateOffers();
-const offers = Array.from(offersFragment.children);
+getData()
+  .then((offersData) => generateOffers(offersData))
+  .then((generatedOffers) => renderOffersMarkers(generatedOffers));
 
-offers.forEach((offer) => {
-  const addressCoordinates = offer.querySelector('.popup__text--address')
-    .textContent.split(', ');
+function renderOffersMarkers(generatedOffers) {
+  const [offersFragment, offerLocations] = generatedOffers;
+  const offers = Array.from(offersFragment.children);
 
-  L.marker(
-    [+addressCoordinates[0], +addressCoordinates[1]],
-    { icon: commonMarkerIcon },
-  ).addTo(map).bindPopup(
-    L.popup(
-      {
-        content: offer.innerHTML,
-        offset: [0, -32],
-      })
-  );
-});
+  for (let i = 0; i < offers.length; i++) {
+
+    L.marker(
+      [+offerLocations[i].lat, +offerLocations[i].lng],
+      { icon: commonMarkerIcon },
+    ).addTo(map).bindPopup(
+      L.popup(
+        {
+          content: offers[i].innerHTML,
+          offset: [0, -32],
+        })
+    );
+    
+  }
+}
+

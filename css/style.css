@@ -943,6 +943,18 @@ fieldset {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
+.error_data {
+  top: 10%;
+  left: 15%;
+  width: 70%;
+  height: min-content;
+  padding: 20px;
+  z-index: 10000;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
 .success__message,
 .error__message {
   position: relative;

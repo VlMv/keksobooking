@@ -1,24 +1,23 @@
-import { makeNearResidePlaces, RESIDE_PLACE_COUNT } from './reside-places-data.js';
 export { generateOffers };
 
 const cardContent = document.querySelector('#card').content;
 const offerNode = cardContent.querySelector('.popup');
 
 
-const generateOffers = (offersCount = RESIDE_PLACE_COUNT) => {
+const generateOffers = (offersData) => {
   const offersFragment = new DocumentFragment();
-  const residePlaces = makeNearResidePlaces(offersCount);
+  let offerLocations = [];
 
-  for (let i = 0; i < offersCount; i++) {
-    const offerData = residePlaces[i].offer;
-    const offerDataAuthor = residePlaces[i].author;
+  for (let i = 0; i < offersData.length; i++) {
+    offerLocations.push(offersData[i].location);
 
+    const offerData = offersData[i].offer;
+    const offerDataAuthor = offersData[i].author;
     offersFragment.appendChild(generateOffer(offerData, offerDataAuthor));
   }
 
-  return offersFragment;
+  return [offersFragment, offerLocations];
 };
-
 
 function generateOffer(offerData, offerDataAuthor) {
   const offer = offerNode.cloneNode(true);
@@ -138,7 +137,8 @@ function getWordEnding(numeral, endings) {
 
 
 function setFeatures(resideFeatures, features) {
-  if (resideFeatures.length === 0) {
+  // console.log(resideFeatures)
+  if (!resideFeatures || resideFeatures.length === 0) {
     features.remove();
     return;
   }
@@ -158,7 +158,7 @@ function setFeatures(resideFeatures, features) {
 
 
 function setPhotos(residePhotos, photos) {
-  if (residePhotos.length === 0) {
+  if (!residePhotos || residePhotos.length === 0) {
     photos.remove();
     return;
   }
@@ -194,3 +194,5 @@ function checkFileNotExists(urlToFile) {
     return true;
   }
 }
+
+// переделать под фетч функцию экзиста и сделать сет аватар через асунк/авейт
