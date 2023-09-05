@@ -1,4 +1,4 @@
-export { getData };
+export { getData, submitData };
 
 function getData() {
   let data = fetch('https://23.javascript.pages.academy/keksobooking/data')
@@ -8,9 +8,23 @@ function getData() {
       }
       throw new Error('Ошибка загрузки данных с сервера. Попробуйте перезагрузить страницу.');
     })
-    .catch((error) => renderError(error));
+    .catch(error => renderError(error));
 
   return data;
+}
+
+
+async function submitData(formData, onSuccess, onError) {
+  try {
+    const response = await fetch('https://23.javascript.pages.academy/keksobooking', {
+      method: 'POST',
+      body: formData,
+    });
+    const result = response.ok;
+    await onSuccess(result);
+  } catch (error) {
+    await onError(error);
+  }
 }
 
 

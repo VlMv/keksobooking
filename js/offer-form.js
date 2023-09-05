@@ -1,4 +1,7 @@
+import { submitData } from './offers-data.js';
+
 const offerForm = document.querySelector('.ad-form');
+const filtersForm = document.querySelector('.map__filters')
 
 
 // price of place type dependencies
@@ -74,6 +77,24 @@ guestsCapacitySelect.addEventListener('change', checkGuestsCapacityValidaton);
 roomsNumberSelect.addEventListener('change', checkGuestsCapacityValidaton);
 
 
-offerForm.addEventListener('submit', (evt) => {
+offerForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
+
+  const offerFormData = new FormData(offerForm);
+  await submitData(offerFormData, gogo, gogo1);
+
+  offerForm.reset();
+  filtersForm.reset();
 });
+
+// слелать функцию выставления маркера в модуле МАП на дефаулт значения. Перенести установку value адресс инпута в модуль Формы в виде функции и экспортировать в модуль МАП для установки значений на драг-ивенте. Использовать тут же для сброса в дефаулт или добавить вызов функции в фукнцию выставления маркера в дефаулт значения в модуле МАП?
+
+
+function gogo(suc) {
+  console.log(suc);
+}
+
+function gogo1(err) {
+  console.log(err);
+}
+

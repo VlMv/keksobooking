@@ -194,5 +194,3 @@ function checkFileNotExists(urlToFile) {
     return true;
   }
 }
-
-// переделать под фетч функцию экзиста и сделать сет аватар через асунк/авейт

@@ -34,7 +34,7 @@ const map = L.map('map-canvas')
   .setView({
     lat: 35.67822,
     lng: 139.74901,
-  }, 13);
+  }, 14);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -87,26 +87,24 @@ mainMarker.on('drag', () => {
 //offers markers generation and rendering
 
 getData()
-  .then((offersData) => generateOffers(offersData))
-  .then((generatedOffers) => renderOffersMarkers(generatedOffers));
+  .then(offersData => generateOffers(offersData))
+  .then(generatedOffers => renderOffersMarkers(generatedOffers));
 
 function renderOffersMarkers(generatedOffers) {
   const [offersFragment, offerLocations] = generatedOffers;
   const offers = Array.from(offersFragment.children);
 
-  for (let i = 0; i < offers.length; i++) {
-
+  offers.forEach((offer, i) => {
     L.marker(
       [+offerLocations[i].lat, +offerLocations[i].lng],
       { icon: commonMarkerIcon },
     ).addTo(map).bindPopup(
       L.popup(
         {
-          content: offers[i].innerHTML,
+          content: offer.innerHTML,
           offset: [0, -32],
         })
-    );
-    
-  }
+    )
+  });
 }
 
