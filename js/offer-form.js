@@ -1,7 +1,15 @@
 import { submitData } from './offers-data.js';
+import { resetMainMarkerPosition } from './map.js';
+export { setOfferAddressCoordinates };
+
+const FLOAT_SYMBOLS_COUNT = 5;
 
 const offerForm = document.querySelector('.ad-form');
 const filtersForm = document.querySelector('.map__filters')
+const addressInput = offerForm.querySelector('#address');
+const body = document.querySelector('body');
+const successPopup = document.querySelector('#success').content.querySelector('.success');
+const errorPopup = document.querySelector('#error').content.querySelector('.error');
 
 
 // price of place type dependencies
@@ -77,24 +85,49 @@ guestsCapacitySelect.addEventListener('change', checkGuestsCapacityValidaton);
 roomsNumberSelect.addEventListener('change', checkGuestsCapacityValidaton);
 
 
+function setOfferAddressCoordinates(latitude, longitude) {
+  addressInput.value = `${latitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${longitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
+}
+
+
 offerForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
 
-  const offerFormData = new FormData(offerForm);
-  await submitData(offerFormData, gogo, gogo1);
+  await submitData(new FormData(offerForm), onSuccessSubmit, onErrorSubmit);
+});
+
+
+function onSuccessSubmit() {
+  body.appendChild(successPopup);
 
   offerForm.reset();
   filtersForm.reset();
-});
+  resetMainMarkerPosition();
 
-// слелать функцию выставления маркера в модуле МАП на дефаулт значения. Перенести установку value адресс инпута в модуль Формы в виде функции и экспортировать в модуль МАП для установки значений на драг-ивенте. Использовать тут же для сброса в дефаулт или добавить вызов функции в фукнцию выставления маркера в дефаулт значения в модуле МАП?
-
-
-function gogo(suc) {
-  console.log(suc);
+  body.addEventListener('click', () => successPopup.remove(), { once: true });
+  body.addEventListener('keydown', removeSuccessPopup);
+}
+function removeSuccessPopup(evt) {
+  removePopup(evt, successPopup, removeSuccessPopup);
 }
 
-function gogo1(err) {
-  console.log(err);
+
+function onErrorSubmit() {
+  body.appendChild(errorPopup);
+
+  errorPopup.querySelector('.error__button').addEventListener('click', () => errorPopup.remove(), { once: true });
+  body.addEventListener('keydown', removeErrorPopup);
 }
+function removeErrorPopup(evt) {
+  removePopup(evt, errorPopup, removeErrorPopup);
+}
+
+
+function removePopup(evt, popupSelector, handler) {
+  if (evt.key === 'Escape') {
+    popupSelector.remove()
+    body.removeEventListener('keydown', handler);
+  }
+}
+
 

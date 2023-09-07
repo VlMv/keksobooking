@@ -14,16 +14,20 @@ function getData() {
 }
 
 
+// trying another way to realise async operations
+
 async function submitData(formData, onSuccess, onError) {
   try {
     const response = await fetch('https://23.javascript.pages.academy/keksobooking', {
       method: 'POST',
       body: formData,
     });
-    const result = response.ok;
-    await onSuccess(result);
+    if (!response.ok) {
+      throw new Error();
+    }
+    await onSuccess();
   } catch (error) {
-    await onError(error);
+    await onError();
   }
 }
 

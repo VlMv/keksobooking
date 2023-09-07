@@ -1,12 +1,21 @@
+/* eslint-disable no-undef */
 import { getData } from './offers-data.js';
 import { generateOffers } from './offers-generation.js';
+import { setOfferAddressCoordinates } from './offer-form.js';
 
-const FLOAT_SYMBOLS_COUNT = 5;
+export { DEFAULT_LATITUDE, DEFAULT_LONGITUDE, resetMainMarkerPosition };
+
+const DEFAULT_LATITUDE = 35.67822;
+const DEFAULT_LONGITUDE = 139.74901;
+const MAP_MARKER_PADDING_X = 200;
+const MAP_MARKER_PADDING_Y = 150;
+const DEFAULT_MAP_ZOOM = 14;
+const MARKER_DRAG_SPEED = 7;
+const POPUP_OFFSET_COORDINATES = [0, -32];
 
 const offerForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 const offerFormFieldsets = offerForm.querySelectorAll('fieldset');
-const addressInput = offerForm.querySelector('#address');
 
 for (const fieldset of offerFormFieldsets) {
   fieldset.setAttribute('disabled', '');
@@ -32,9 +41,9 @@ const map = L.map('map-canvas')
     }
   })
   .setView({
-    lat: 35.67822,
-    lng: 139.74901,
-  }, 14);
+    lat: DEFAULT_LATITUDE,
+    lng: DEFAULT_LONGITUDE,
+  }, DEFAULT_MAP_ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -62,13 +71,13 @@ const commonMarkerIcon = L.icon({
 // set main Marker dragging
 
 const mainMarker = L.marker(
-  [35.67822, 139.74901],
+  [DEFAULT_LATITUDE, DEFAULT_LONGITUDE],
   {
     icon: mainMarkerIcon,
     draggable: true,
     autoPan: true,
-    autoPanPadding: [200, 150],
-    autoPanSpeed: 7,
+    autoPanPadding: [MAP_MARKER_PADDING_X, MAP_MARKER_PADDING_Y],
+    autoPanSpeed: MARKER_DRAG_SPEED,
   },
 ).addTo(map);
 
@@ -80,8 +89,16 @@ mainMarker.on('drag', () => {
   const markerLatitude = mainMarker.getLatLng().lat;
   const markerLongitude = mainMarker.getLatLng().lng;
 
-  addressInput.value = `${markerLatitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${markerLongitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
+  setOfferAddressCoordinates(markerLatitude, markerLongitude)
 });
+
+function resetMainMarkerPosition () {
+  mainMarker.setLatLng([DEFAULT_LATITUDE, DEFAULT_LONGITUDE]);
+  map.setView({
+    lat: DEFAULT_LATITUDE,
+    lng: DEFAULT_LONGITUDE,
+  }, DEFAULT_MAP_ZOOM)
+}
 
 
 //offers markers generation and rendering
@@ -102,7 +119,7 @@ function renderOffersMarkers(generatedOffers) {
       L.popup(
         {
           content: offer.innerHTML,
-          offset: [0, -32],
+          offset: POPUP_OFFSET_COORDINATES,
         })
     )
   });
