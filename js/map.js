@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { getData } from './offers-data.js';
 import { generateOffers } from './offers-generation.js';
-import { filterData, filterResidingPlaceType } from './map-filters.js';
+import { filterData } from './map-filters.js';
 import { setOfferAddressCoordinates } from './offer-form.js';
 
 export { DEFAULT_LATITUDE, DEFAULT_LONGITUDE, resetMainMarkerPosition };
