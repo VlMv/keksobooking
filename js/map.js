@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import { getData } from './offers-data.js';
 import { generateOffers } from './offers-generation.js';
+import { filterData, filterResidingPlaceType } from './map-filters.js';
 import { setOfferAddressCoordinates } from './offer-form.js';
 
 export { DEFAULT_LATITUDE, DEFAULT_LONGITUDE, resetMainMarkerPosition };
@@ -32,12 +33,8 @@ mapFilters.classList.add('map__filters--disabled');
 const map = L.map('map-canvas')
   .once('load', () => {
     offerForm.classList.remove('ad-form--disabled');
-    mapFilters.classList.remove('map__filters--disabled');
     for (const fieldset of offerFormFieldsets) {
       fieldset.removeAttribute('disabled', '');
-    }
-    for (const mapFilter of mapFilters.children) {
-      mapFilter.removeAttribute('disabled', '');
     }
   })
   .setView({
@@ -92,7 +89,7 @@ mainMarker.on('drag', () => {
   setOfferAddressCoordinates(markerLatitude, markerLongitude)
 });
 
-function resetMainMarkerPosition () {
+function resetMainMarkerPosition() {
   mainMarker.setLatLng([DEFAULT_LATITUDE, DEFAULT_LONGITUDE]);
   map.setView({
     lat: DEFAULT_LATITUDE,
@@ -104,24 +101,29 @@ function resetMainMarkerPosition () {
 //offers markers generation and rendering
 
 getData()
-  .then(offersData => generateOffers(offersData))
-  .then(generatedOffers => renderOffersMarkers(generatedOffers));
+  .then(data => generateOffers(data))
+  .then(offersMap => renderOffersMarkers(offersMap))
+  .then(() => {
+    mapFilters.classList.remove('map__filters--disabled');
+    for (const mapFilter of mapFilters.children) {
+      mapFilter.removeAttribute('disabled', '');
+    }
+  });
 
-function renderOffersMarkers(generatedOffers) {
-  const [offersFragment, offerLocations] = generatedOffers;
-  const offers = Array.from(offersFragment.children);
+function renderOffersMarkers(offersMap) {
+  offersMap.forEach((offer, location) => {
 
-  offers.forEach((offer, i) => {
     L.marker(
-      [+offerLocations[i].lat, +offerLocations[i].lng],
+      [+location.lat, +location.lng],
       { icon: commonMarkerIcon },
-    ).addTo(map).bindPopup(
+    ).bindPopup(
       L.popup(
         {
           content: offer.innerHTML,
           offset: POPUP_OFFSET_COORDINATES,
         })
-    )
+    ).addTo(map);
+
   });
 }
 

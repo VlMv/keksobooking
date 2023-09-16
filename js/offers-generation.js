@@ -5,18 +5,15 @@ const offerNode = cardContent.querySelector('.popup');
 
 
 const generateOffers = (offersData) => {
-  const offersFragment = new DocumentFragment();
-  let offerLocations = [];
+  const offersMap = new Map();
 
   for (let i = 0; i < offersData.length; i++) {
-    offerLocations.push(offersData[i].location);
+    const offer = generateOffer(offersData[i].offer, offersData[i].author);
 
-    const offerData = offersData[i].offer;
-    const offerDataAuthor = offersData[i].author;
-    offersFragment.appendChild(generateOffer(offerData, offerDataAuthor));
+    offersMap.set(offersData[i].location, offer)
   }
 
-  return [offersFragment, offerLocations];
+  return offersMap;
 };
 
 function generateOffer(offerData, offerDataAuthor) {
