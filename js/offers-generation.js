@@ -5,15 +5,15 @@ const offerNode = cardContent.querySelector('.popup');
 
 
 const generateOffers = (offersData) => {
-  const offersMap = new Map();
+  const offers = new Map();
 
   for (let i = 0; i < offersData.length; i++) {
     const offer = generateOffer(offersData[i].offer, offersData[i].author);
 
-    offersMap.set(offersData[i].location, offer)
+    offers.set(offersData[i].location, offer);
   }
 
-  return offersMap;
+  return offers;
 };
 
 function generateOffer(offerData, offerDataAuthor) {
