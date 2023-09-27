@@ -43,7 +43,7 @@ function filterData(filterCallBack) {
 
 
 function filterOffersByFeature(offersData, feature, input) {
-  console.log(input.value)
+  
   return offersData.filter(
     offerData => String(offerData.offer[feature]) === input.value);
 }

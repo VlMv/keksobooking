@@ -57,7 +57,7 @@ L.tileLayer(
 
 getData()
   .then(data => {
-    filterData(()=> filterOffers(data, generateOffers));
+    filterData(() => filterOffers(data, generateOffers));
     return generateOffers(data);
   })
   .then(offers => renderOffersMarkers(offers))
