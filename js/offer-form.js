@@ -3,18 +3,42 @@ import { resetMainMarkerPosition } from './map.js';
 export { setOfferAddressCoordinates };
 
 const FLOAT_SYMBOLS_COUNT = 5;
+const IMAGES_FILE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+const IMAGES_COUNT = 6;
 
 const offerForm = document.querySelector('.ad-form');
 const filtersForm = document.querySelector('.map__filters')
 const addressInput = offerForm.querySelector('#address');
 const body = document.querySelector('body');
+
 const successPopup = document.querySelector('#success').content.querySelector('.success');
 const errorPopup = document.querySelector('#error').content.querySelector('.error');
 
-
-// price of place type dependencies
 const placeTypesSelect = offerForm.querySelector('#type');
 const priceInput = offerForm.querySelector('#price');
+
+const checkInInput = offerForm.querySelector('#timein');
+const checkOutInput = offerForm.querySelector('#timeout');
+const timeFieldset = offerForm.querySelector('.ad-form__element--time');
+
+const roomsNumberSelect = offerForm.querySelector('#room_number');
+const guestsCapacitySelect = offerForm.querySelector('#capacity');
+
+const offerAvatarFileInput = offerForm.querySelector('#avatar');
+const offerPhotoFileInput = offerForm.querySelector('#images');
+const photosContainer = offerForm.querySelector('.ad-form__photo');
+const avatarContainer = offerForm.querySelector('.ad-form-header__preview');
+
+
+offerForm.addEventListener('submit', async (evt) => {
+  evt.preventDefault();
+
+  await submitData(new FormData(offerForm), onSuccessSubmit, onErrorSubmit);
+});
+
+
+// price of place type dependencies
+
 const placesMinPrice = {
   bungalow: 0,
   flat: 1000,
@@ -40,9 +64,6 @@ priceInput.addEventListener('change', () => {
 
 
 // chekin and checkout dependencies
-const checkInInput = offerForm.querySelector('#timein');
-const checkOutInput = offerForm.querySelector('#timeout');
-const timeFieldset = offerForm.querySelector('.ad-form__element--time');
 
 timeFieldset.addEventListener('input', (evt) => {
   if (evt.target.matches('#timein')) {
@@ -55,10 +76,11 @@ timeFieldset.addEventListener('input', (evt) => {
 
 
 // rooms and guests dependencies
-const roomsNumberSelect = offerForm.querySelector('#room_number');
-const guestsCapacitySelect = offerForm.querySelector('#capacity');
 
-const checkGuestsCapacityValidaton = () => {
+guestsCapacitySelect.addEventListener('change', checkGuestsCapacityValidaton);
+roomsNumberSelect.addEventListener('change', checkGuestsCapacityValidaton);
+
+function checkGuestsCapacityValidaton() {
   const isGuestsCountDoesNotMatchRooms = +guestsCapacitySelect.value > +roomsNumberSelect.value && +guestsCapacitySelect.value !== 0;
   const isNotForGuests = (+roomsNumberSelect.value === 100 && +guestsCapacitySelect.value !== 0);
   const isNotEnoughRooms = +roomsNumberSelect.value !== 100 && +guestsCapacitySelect.value === 0;
@@ -79,22 +101,66 @@ const checkGuestsCapacityValidaton = () => {
 
   guestsCapacitySelect.reportValidity();
   roomsNumberSelect.reportValidity();
-};
-
-guestsCapacitySelect.addEventListener('change', checkGuestsCapacityValidaton);
-roomsNumberSelect.addEventListener('change', checkGuestsCapacityValidaton);
-
-
-function setOfferAddressCoordinates(latitude, longitude) {
-  addressInput.value = `${latitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${longitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
 }
 
 
-offerForm.addEventListener('submit', async (evt) => {
-  evt.preventDefault();
+// images uploading validation and images thumbnails
 
-  await submitData(new FormData(offerForm), onSuccessSubmit, onErrorSubmit);
+offerPhotoFileInput.addEventListener('change', (evt) => {
+  if (validateImageFiles(evt.target, photosContainer)) {
+    renderImageThumbnails(evt.target, photosContainer);
+  }
 });
+
+offerAvatarFileInput.addEventListener('change', (evt) => {
+  if (validateImageFiles(evt.target, avatarContainer)) {
+    renderImageThumbnails(evt.target, avatarContainer);
+  }
+});
+
+
+function renderImageThumbnails(input, imageContainer) {
+  const files = input.files;
+
+  clearImageContainer(imageContainer);
+  for (const file of files) {
+    const thumbnail = document.createElement('img');
+    thumbnail.style.maxWidth = '70px';
+    thumbnail.style.objectFit = 'contain';
+    thumbnail.src = URL.createObjectURL(file);
+    thumbnail.addEventListener('load', () => {
+      URL.revokeObjectURL(thumbnail.src);
+    }, { once: true })
+
+    imageContainer.appendChild(thumbnail);
+  }
+}
+
+function validateImageFiles(input, imageContainer) {
+  const files = input.files;
+
+  if (files.length > IMAGES_COUNT) {
+    clearImageContainer(imageContainer);
+    input.value = null;
+    renderErrorImageLoadingPopup('Добавьте не более 6 фотографий.')
+    return false;
+  }
+
+  for (const file of files) {
+    const matches = IMAGES_FILE_TYPES.some((type) => {
+      return file.name.endsWith(type);
+    });
+
+    if (!matches) {
+      clearImageContainer(imageContainer);
+      input.value = null;
+      renderErrorImageLoadingPopup('Выберите изображения формата JPG, PNG, BMP, GIF, WEBP, SVG.')
+      return false
+    }
+  }
+
+  return true
+}
 
 
 function onSuccessSubmit() {
@@ -102,13 +168,16 @@ function onSuccessSubmit() {
 
   offerForm.reset();
   filtersForm.reset();
+  clearImageContainer(avatarContainer);
+  clearImageContainer(photosContainer);
   resetMainMarkerPosition();
 
   body.addEventListener('click', () => successPopup.remove(), { once: true });
   body.addEventListener('keydown', removeSuccessPopup);
-}
-function removeSuccessPopup(evt) {
-  removePopup(evt, successPopup, removeSuccessPopup);
+
+  function removeSuccessPopup(evt) {
+    removePopup(evt, successPopup, removeSuccessPopup);
+  }
 }
 
 
@@ -117,9 +186,24 @@ function onErrorSubmit() {
 
   errorPopup.querySelector('.error__button').addEventListener('click', () => errorPopup.remove(), { once: true });
   body.addEventListener('keydown', removeErrorPopup);
+
+  function removeErrorPopup(evt) {
+    removePopup(evt, errorPopup, removeErrorPopup);
+  }
 }
-function removeErrorPopup(evt) {
-  removePopup(evt, errorPopup, removeErrorPopup);
+
+
+function renderErrorImageLoadingPopup(errorText) {
+  const errorNode = errorPopup.cloneNode(true);
+  errorNode.querySelector('.error__message').textContent = errorText;
+  body.appendChild(errorNode);
+
+  errorNode.querySelector('.error__button').addEventListener('click', () => errorNode.remove(), { once: true });
+  body.addEventListener('keydown', removeErrorImageLoadingPopup);
+
+  function removeErrorImageLoadingPopup(evt) {
+    removePopup(evt, errorNode, removeErrorImageLoadingPopup);
+  }
 }
 
 
@@ -131,3 +215,13 @@ function removePopup(evt, popupSelector, handler) {
 }
 
 
+function setOfferAddressCoordinates(latitude, longitude) {
+  addressInput.value = `${latitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${longitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
+}
+
+
+function clearImageContainer(imageContainer) {
+  while (imageContainer.hasChildNodes()) {
+    imageContainer.removeChild(imageContainer.lastChild)
+  }
+}

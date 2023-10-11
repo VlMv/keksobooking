@@ -2,10 +2,8 @@
 import { getData } from './offers-data.js';
 import { generateOffers } from './offers-generation.js';
 import { setOfferAddressCoordinates } from './offer-form.js';
-import {
-  filterData,
-  filterOffers
-} from './map-filters.js';
+import { filterData, filterOffers } from './map-filters.js';
+import { debounce } from './common.js';
 
 export { resetMainMarkerPosition, renderOffersMarkers };
 
@@ -16,6 +14,16 @@ const MAP_MARKER_PADDING_Y = 150;
 const DEFAULT_MAP_ZOOM = 14;
 const MARKER_DRAG_SPEED = 7;
 const POPUP_OFFSET_COORDINATES = [0, -32];
+const DELAY = 500;
+
+
+const offerForm = document.querySelector('.ad-form');
+const mapFilters = document.querySelector('.map__filters');
+const offerFormFieldsets = offerForm.querySelectorAll('fieldset');
+
+setFormsDisabled()
+
+const debouncedFilter = debounce(filterOffers, DELAY);
 
 
 // set marker icons
@@ -31,12 +39,6 @@ const commonMarkerIcon = L.icon({
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
-
-const offerForm = document.querySelector('.ad-form');
-const mapFilters = document.querySelector('.map__filters');
-const offerFormFieldsets = offerForm.querySelectorAll('fieldset');
-
-setFormsDisabled()
 
 
 // set leaflet map
@@ -57,7 +59,7 @@ L.tileLayer(
 
 getData()
   .then(data => {
-    filterData(() => filterOffers(data, generateOffers));
+    filterData(() => debouncedFilter(data, generateOffers));
     return generateOffers(data);
   })
   .then(offers => renderOffersMarkers(offers))
