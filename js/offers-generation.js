@@ -183,6 +183,8 @@ function setAvatar(offerAuthorAvatar, authorAvatar) {
   authorAvatar.setAttribute('src', offerAuthorAvatar);
 }
 
+
+
 function checkFileNotExists(urlToFile) {
   let xhr = new XMLHttpRequest();
   xhr.open('HEAD', urlToFile, false);

@@ -1,5 +1,6 @@
 import { submitData } from './offers-data.js';
 import { resetMainMarkerPosition } from './map.js';
+import { setDragAndDrop } from './drag-and-drop-data.js';
 export { setOfferAddressCoordinates };
 
 const FLOAT_SYMBOLS_COUNT = 5;
@@ -28,6 +29,8 @@ const offerAvatarFileInput = offerForm.querySelector('#avatar');
 const offerPhotoFileInput = offerForm.querySelector('#images');
 const photosContainer = offerForm.querySelector('.ad-form__photo');
 const avatarContainer = offerForm.querySelector('.ad-form-header__preview');
+const photosDropZone = offerForm.querySelector('.ad-form__drop-zone');
+const avatarDropZone = offerForm.querySelector('.ad-form-header__drop-zone');
 
 
 offerForm.addEventListener('submit', async (evt) => {
@@ -118,7 +121,6 @@ offerAvatarFileInput.addEventListener('change', (evt) => {
   }
 });
 
-
 function renderImageThumbnails(input, imageContainer) {
   const files = input.files;
 
@@ -142,7 +144,14 @@ function validateImageFiles(input, imageContainer) {
   if (files.length > IMAGES_COUNT) {
     clearImageContainer(imageContainer);
     input.value = null;
-    renderErrorImageLoadingPopup('Добавьте не более 6 фотографий.')
+    renderErrorImageLoadingPopup(`Добавьте не более ${IMAGES_COUNT} фотографий.`)
+    return false;
+  }
+
+  if (!input.matches('[multiple]') && files.length > 1) {
+    clearImageContainer(imageContainer);
+    input.value = null;
+    renderErrorImageLoadingPopup('Добавьте только одно изображение.')
     return false;
   }
 
@@ -162,6 +171,12 @@ function validateImageFiles(input, imageContainer) {
   return true
 }
 
+// set droping image files
+
+setDragAndDrop(avatarDropZone, offerAvatarFileInput);
+setDragAndDrop(photosDropZone, offerPhotoFileInput);
+
+
 
 function onSuccessSubmit() {
   body.appendChild(successPopup);
@@ -180,7 +195,6 @@ function onSuccessSubmit() {
   }
 }
 
-
 function onErrorSubmit() {
   body.appendChild(errorPopup);
 
@@ -191,7 +205,6 @@ function onErrorSubmit() {
     removePopup(evt, errorPopup, removeErrorPopup);
   }
 }
-
 
 function renderErrorImageLoadingPopup(errorText) {
   const errorNode = errorPopup.cloneNode(true);
@@ -206,7 +219,6 @@ function renderErrorImageLoadingPopup(errorText) {
   }
 }
 
-
 function removePopup(evt, popupSelector, handler) {
   if (evt.key === 'Escape') {
     popupSelector.remove()
@@ -214,11 +226,9 @@ function removePopup(evt, popupSelector, handler) {
   }
 }
 
-
 function setOfferAddressCoordinates(latitude, longitude) {
   addressInput.value = `${latitude.toFixed(FLOAT_SYMBOLS_COUNT)}, ${longitude.toFixed(FLOAT_SYMBOLS_COUNT)}`;
 }
-
 
 function clearImageContainer(imageContainer) {
   while (imageContainer.hasChildNodes()) {

@@ -52,6 +52,7 @@ function filterOffersByFeature(offersData, feature, input) {
     offerData => String(offerData.offer[feature]) === input.value);
 }
 
+
 function filterOffersByPrice(price) {
   if (
     priceSelect.value === 'middle'
@@ -69,6 +70,7 @@ function filterOffersByPrice(price) {
     && price > 50000
   ) return price;
 }
+
 
 function filterOffersByAdditionalFeature(offersData) {
   featureCheckboxes.forEach(checkbox => {

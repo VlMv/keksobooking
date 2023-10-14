@@ -21,9 +21,10 @@ const offerForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 const offerFormFieldsets = offerForm.querySelectorAll('fieldset');
 
-setFormsDisabled()
-
 const debouncedFilter = debounce(filterOffers, DELAY);
+
+
+setFormsDisabled()
 
 
 // set marker icons
@@ -111,6 +112,7 @@ function renderOffersMarkers(offersMap) {
     ).addTo(offersMarkerLayer);
   });
 }
+
 
 
 function resetMainMarkerPosition() {
