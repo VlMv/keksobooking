@@ -1,5 +1,5 @@
-import { renderOffersMarkers } from './map.js';
-export { filterData, filterOffers };
+/* eslint-disable import/no-cycle */
+import { renderOffersMarkers } from './map';
 
 
 const filtersForm = document.querySelector('.map__filters');
@@ -19,39 +19,11 @@ const filterSelects = new Map()
 const checkboxFeaturesSet = new Set();
 
 
-function filterOffers(data, generateOffers) {
-  let offersData = data.slice();
-
-  filterSelects.forEach((feature, select) => {
-    if (select.value !== 'any' && select !== priceSelect) {
-      offersData = filterOffersByFeature(offersData, feature, select);
-    }
-    if (select.value !== 'any' && select === priceSelect) {
-      offersData = offersData.filter(
-        offerData => filterOffersByPrice(offerData.offer.price));
-    }
-  });
-
-  offersData = filterOffersByAdditionalFeature(offersData);
-
-  renderOffersMarkers(generateOffers(offersData));
-}
-
-
-function filterData(filterCallBack) {
-  placeTypeSelect.addEventListener('input', filterCallBack);
-  priceSelect.addEventListener('input', filterCallBack);
-  roomsCountSelect.addEventListener('input', filterCallBack);
-  guestsCountSelect.addEventListener('input', filterCallBack);
-  featuresFieldset.addEventListener('input', filterCallBack);
-}
-
-
 function filterOffersByFeature(offersData, feature, input) {
   return offersData.filter(
-    offerData => String(offerData.offer[feature]) === input.value);
+    offerData => String(offerData.offer[feature]) === input.value
+  );
 }
-
 
 function filterOffersByPrice(price) {
   if (
@@ -69,24 +41,55 @@ function filterOffersByPrice(price) {
     priceSelect.value === 'high'
     && price > 50000
   ) return price;
-}
 
+  return null;
+}
 
 function filterOffersByAdditionalFeature(offersData) {
   featureCheckboxes.forEach(checkbox => {
-    checkbox.checked === true ?
-      checkboxFeaturesSet.add(checkbox.value) :
-      checkboxFeaturesSet.delete(checkbox.value);
+    checkbox.checked === true
+      ? checkboxFeaturesSet.add(checkbox.value)
+      : checkboxFeaturesSet.delete(checkbox.value);
   });
 
   return offersData.filter(
     offerData => {
-      let offerFeatures = offerData.offer.features;
+      const offerFeatures = offerData.offer.features;
 
       return Array.from(checkboxFeaturesSet).every(feature => {
         if (offerFeatures) return offerFeatures.includes(feature);
+        return false;
       });
-    });
+    }
+  );
 }
 
 
+async function filterOffers(data, generateOffers) {
+  let offersData = data.slice();
+
+  filterSelects.forEach((feature, select) => {
+    if (select.value !== 'any' && select !== priceSelect) {
+      offersData = filterOffersByFeature(offersData, feature, select);
+    }
+    if (select.value !== 'any' && select === priceSelect) {
+      offersData = offersData.filter(
+        offerData => filterOffersByPrice(offerData.offer.price)
+      );
+    }
+  });
+
+  offersData = filterOffersByAdditionalFeature(offersData);
+
+  renderOffersMarkers(await generateOffers(offersData));
+}
+
+function filterData(filterCallBack) {
+  placeTypeSelect.addEventListener('input', filterCallBack);
+  priceSelect.addEventListener('input', filterCallBack);
+  roomsCountSelect.addEventListener('input', filterCallBack);
+  guestsCountSelect.addEventListener('input', filterCallBack);
+  featuresFieldset.addEventListener('input', filterCallBack);
+}
+
+export { filterData, filterOffers };
