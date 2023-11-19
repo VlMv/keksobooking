@@ -14,7 +14,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = !isDevelopment;
 
-const pages = ['index']; // add test
+const pages = ['index']; 
 
 const avatarsFolder = {
   from: path.resolve(__dirname, "src/img/avatars"),
@@ -56,13 +56,6 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           'css-loader',
           isProduction ? 'postcss-loader' : '',
-          // 'resolve-url-loader',
-          // {
-          //   loader: 'sass-loader',
-          //   options: {
-          //     sourceMap: true,
-          //   },
-          // },
         ],
       },
       {
