@@ -2,11 +2,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import { getData } from './offers-data';
-import { generateOffers } from './offers-generation';
 import { setOfferAddressCoordinates } from './offer-form';
-import { filterData, filterOffers } from './map-filters';
-import { debounce } from './common';
 
 
 const DEFAULT_LATITUDE = 35.67822;
@@ -16,7 +12,6 @@ const MAP_MARKER_PADDING_Y = 150;
 const DEFAULT_MAP_ZOOM = 14;
 const MARKER_DRAG_SPEED = 7;
 const POPUP_OFFSET_COORDINATES = [0, -32];
-const DELAY = 500;
 
 
 const offerForm = document.querySelector('.ad-form');
@@ -36,8 +31,6 @@ const commonMarkerIcon = L.icon({
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
-
-const debouncedFilter = debounce(filterOffers, DELAY);
 
 
 function setFormsDisabled() {
@@ -142,13 +135,5 @@ function renderOffersMarkers(offersMap) {
   });
 }
 
-getData()
-  .then(data => {
-    filterData(() => debouncedFilter(data, generateOffers));
-    return generateOffers(data);
-  })
-  .then(offers => renderOffersMarkers(offers))
-  .then(setFilterFormAccessible());
 
-
-export { resetMainMarkerPosition, renderOffersMarkers };
+export { resetMainMarkerPosition, renderOffersMarkers, setFilterFormAccessible };

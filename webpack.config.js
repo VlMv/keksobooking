@@ -14,7 +14,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = !isDevelopment;
 
-const pages = ['index']; // add test
+const pages = ['index'];
 
 const avatarsFolder = {
   from: path.resolve(__dirname, "src/img/avatars"),
