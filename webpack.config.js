@@ -56,13 +56,6 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           'css-loader',
           isProduction ? 'postcss-loader' : '',
-          // 'resolve-url-loader',
-          // {
-          //   loader: 'sass-loader',
-          //   options: {
-          //     sourceMap: true,
-          //   },
-          // },
         ],
       },
       {
