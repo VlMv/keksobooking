@@ -20,6 +20,7 @@ VIMv
 - Map, set
 - setCustomValidity
 - [URL](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static)
+- JSON
 - ESlint
 - Babel
 - NPM
