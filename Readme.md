@@ -11,7 +11,7 @@ VIMv
 Используемые технологии и подходы:
 - JavaScript
 - ES modules
-- [Библиотека Leaflet](https://leafletjs.com/)
+- Библиотека [Leaflet](https://leafletjs.com/)
 - [Openstreetmap](https://www.openstreetmap.org/#map=6/38.342/117.048)
 - Fetch
 - Async/await, promise
