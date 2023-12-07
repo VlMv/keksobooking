@@ -1,4 +1,4 @@
-# Keksobooking, pet-проект.
+# Keksobooking. Pet-проект.
 VIMv
 
 ---
