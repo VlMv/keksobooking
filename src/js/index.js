@@ -23,4 +23,3 @@ getData()
   })
   .then(offers => renderOffersMarkers(offers))
   .then(setFilterFormAccessible());
-
