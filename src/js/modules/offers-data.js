@@ -10,7 +10,7 @@ function renderError(errorText) {
 
 
 function getData() {
-  const data = fetch('https://23.javascript.pages.academy/keksobooking/data')
+  const data = fetch('https://23.javascript.htmlacademy.pro/keksobooking/data')
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -27,7 +27,7 @@ function getData() {
 
 async function submitData(formData, onSuccess, onError) {
   try {
-    const response = await fetch('https://23.javascript.pages.academy/keksobooking', {
+    const response = await fetch('https://23.javascript.htmlacademy.pro/keksobooking', {
       method: 'POST',
       body: formData,
     });
